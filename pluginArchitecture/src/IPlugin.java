@@ -2,7 +2,7 @@ import javax.swing.JPanel;
 
 public interface IPlugin {
 
-	public void buildUI(JPanel panel);
+	public JPanel buildUI(IStatusReceiver receiver);
 	
 	public void breakdownUI();
 	

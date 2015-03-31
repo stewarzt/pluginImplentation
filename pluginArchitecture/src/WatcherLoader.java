@@ -30,7 +30,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.*;
@@ -52,7 +51,6 @@ public class WatcherLoader {
 	private final Map<WatchKey, Path> keys;
 	private final boolean recursive;
 	private boolean trace = false;
-	private static PluginManager pluginManager;
 
 	@SuppressWarnings("unchecked")
 	static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -97,6 +95,9 @@ public class WatcherLoader {
 			public FileVisitResult visitFile(Path file,
 					BasicFileAttributes attrs) throws IOException {
 				File pluginJarFile = file.toFile();
+				
+				System.out.println(pluginJarFile.toPath().toAbsolutePath().toString());
+				System.out.println(pluginJarFile.toURL().toString());
 				ClassLoader pluginLoader;
 
 				pluginLoader = URLClassLoader
@@ -107,7 +108,7 @@ public class WatcherLoader {
 					plugin = (IPlugin) pluginLoader.loadClass(
 							"PluginImplementation").newInstance();
 
-					WatcherLoader.pluginManager.addPlugin(plugin,
+					PluginManager.addPlugin(plugin,
 							pluginJarFile.getPath());
 				} catch (InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
@@ -125,12 +126,11 @@ public class WatcherLoader {
 	/**
 	 * Creates a WatchService and registers the given directory
 	 */
-	WatcherLoader(Path dir, boolean recursive, PluginManager m)
+	WatcherLoader(Path dir, boolean recursive)
 			throws IOException {
 		this.watcher = FileSystems.getDefault().newWatchService();
 		this.keys = new HashMap<WatchKey, Path>();
 		this.recursive = recursive;
-		WatcherLoader.pluginManager = m;
 
 		if (recursive) {
 			registerAll(dir);
@@ -185,17 +185,18 @@ public class WatcherLoader {
 					try {
 						pluginLoader = URLClassLoader
 								.newInstance(new URL[] { pluginJarFile.toURL() });
-
+						
 						IPlugin plugin = (IPlugin) pluginLoader.loadClass(
 								"PluginImplementation").newInstance();
-						this.pluginManager.addPlugin(plugin,
+
+						PluginManager.addPlugin(plugin,
 								pluginJarFile.getPath());
 
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else {
-					this.pluginManager.removePlugin(child.toString());
+					PluginManager.removePlugin(child.toString());
 				}
 
 				// if directory is created, and watching recursively, then

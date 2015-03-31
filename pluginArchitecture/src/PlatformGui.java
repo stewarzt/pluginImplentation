@@ -54,10 +54,12 @@ public class PlatformGui extends JFrame {
 	public void AddPlugin(String pluginName)
 	{
 		listingPanel.AddPluginName(pluginName);
+		listingPanel.revalidate();
 	}
 	
 	public void RemovePlugin(String pluginName)
 	{
 		listingPanel.RemovePluginName(pluginName);
+		listingPanel.revalidate();
 	}	
 }

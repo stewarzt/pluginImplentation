@@ -6,11 +6,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		PlatformGui g = new PlatformGui();
-		g.show();
+		
 		Path dir = Paths.get(args[0]);
 		
 		PluginManager.setPlatformGui(g);
-
+		g.show();
 		try {
 			new WatcherLoader(dir, true).processEvents();
 		} catch (IOException e) {

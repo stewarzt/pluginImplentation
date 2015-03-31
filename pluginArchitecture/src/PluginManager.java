@@ -30,6 +30,11 @@ public class PluginManager {
 		System.out.println("Removed");
 	}
 	
+	public void executePlugin(String pluginName)
+	{
+		
+	}
+	
 	
 	
 	

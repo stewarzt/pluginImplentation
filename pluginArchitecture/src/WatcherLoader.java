@@ -102,9 +102,9 @@ public class WatcherLoader {
 				pluginLoader = URLClassLoader
 						.newInstance(new URL[] { pluginJarFile.toURL() });
 
-				Plugin plugin;
+				IPlugin plugin;
 				try {
-					plugin = (Plugin) pluginLoader.loadClass(
+					plugin = (IPlugin) pluginLoader.loadClass(
 							"PluginImplementation").newInstance();
 
 					WatcherLoader.pluginManager.addPlugin(plugin,
@@ -186,7 +186,7 @@ public class WatcherLoader {
 						pluginLoader = URLClassLoader
 								.newInstance(new URL[] { pluginJarFile.toURL() });
 
-						Plugin plugin = (Plugin) pluginLoader.loadClass(
+						IPlugin plugin = (IPlugin) pluginLoader.loadClass(
 								"PluginImplementation").newInstance();
 						this.pluginManager.addPlugin(plugin,
 								pluginJarFile.getPath());

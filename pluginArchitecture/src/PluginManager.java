@@ -7,15 +7,15 @@ import java.util.HashMap;
 
 public class PluginManager {
 
-	private HashMap<String, Plugin> pluginList;
+	private HashMap<String, IPlugin> pluginList;
 	
 	public PluginManager()
 	{
-		this.pluginList = new HashMap<String, Plugin>();
+		this.pluginList = new HashMap<String, IPlugin>();
 	}
 	
 	
-	public void addPlugin(Plugin p, String filename)
+	public void addPlugin(IPlugin p, String filename)
 	{
 		if(!this.pluginList.containsKey(filename))
 		{

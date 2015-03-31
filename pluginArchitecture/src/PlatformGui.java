@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
@@ -29,6 +30,7 @@ public class PlatformGui extends JFrame {
 		
 		// Change some default settings
 		this.setTitle("Plugin Architecture");
+		this.setSize(new Dimension(900, 750));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// Add the components to the container

@@ -47,6 +47,7 @@ public class PlatformGui extends JFrame {
 	}
 	
 	protected void LoadPlugin(String name) {
+		
 		pluginGuiLoader.LoadPluginByName(name);
 		DisplayStatusMessage("Loaded the Plugin: " + name);
 	}

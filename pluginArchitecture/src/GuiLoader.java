@@ -23,7 +23,7 @@ public class GuiLoader {
 	}
 	
 	public void LoadPluginByName(String name) {
-				
+		
 		IPlugin plugin = PluginManager.GetPlugin(name);
 		if(plugin == null) return;
 		JComponent pluginPanel = plugin.buildUI(this.statusReceiver);

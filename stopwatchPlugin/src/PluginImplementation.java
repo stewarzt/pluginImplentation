@@ -25,14 +25,19 @@ public class PluginImplementation implements IPlugin {
 	private Date startingTime;
 	private Timer timer;
 	
+	
+	
 	private class incrementTask extends TimerTask{
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-			DateFormat df = new SimpleDateFormat("hh:mm:ss");
+			long millis;
 			
-			long millis = new Date().getTime() - startingTime.getTime(); 
+			if (startingTime != null)
+				millis = new Date().getTime() - startingTime.getTime() + timeAccumulated;
+			else{
+				millis = timeAccumulated;
+			}
 			
 			String timeText = String.format("%02d:%02d:%02d", 
 					TimeUnit.MILLISECONDS.toHours(millis),
@@ -45,11 +50,9 @@ public class PluginImplementation implements IPlugin {
 			
 			timer.schedule(new incrementTask(), 100);
 		}
-		
-	
 	}
 	
-	private long timeElapsed = 0;
+	private long timeAccumulated = 0;
 	
     private ActionListener actions = new ActionListener()
     {
@@ -58,20 +61,14 @@ public class PluginImplementation implements IPlugin {
         {
             if (ae.getSource() == startButton)
             {
-            	receiver.HandleStatusMessage("Starting Timer");
-            	
-            	if (timer == null){
-            		
-            	
-            	}
-            	
-            	startingTime = new Date();
             	
             	if (timer != null){
-            		timer.cancel();
-            		timer.purge();
-            		timer = null;
+            		return;
             	}
+            	
+            	receiver.HandleStatusMessage("Starting Timer");
+            	
+            	startingTime = new Date();
             	
             	timer = new Timer();
             	
@@ -84,7 +81,15 @@ public class PluginImplementation implements IPlugin {
             	if (timer != null)
             	{
             		timer.cancel();
+            		timer.purge();
+            		timer = null;
             	}
+            	
+            	if (startingTime != null){
+	            	timeAccumulated += (new Date().getTime() - startingTime.getTime());
+	            	
+	            	startingTime = null;
+	            }
             }
             else if (ae.getSource() == resetButton)
             {
@@ -97,7 +102,9 @@ public class PluginImplementation implements IPlugin {
             		timer = null;
             	}
             	
-            	timeElapsed = 0;
+            	timeAccumulated = 0;
+            	
+            	startingTime = null;
             	
             	timeDisplay.setText("00:00:00");
             }
@@ -112,6 +119,22 @@ public class PluginImplementation implements IPlugin {
 		
 		// Setup the label
 		timeDisplay = new JLabel("00:00:00");
+		
+		long millis;
+		if (startingTime != null)
+			millis = new Date().getTime() - startingTime.getTime() + timeAccumulated;
+		else{
+			millis = timeAccumulated;
+		}
+		
+		String timeText = String.format("%02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
+				TimeUnit.MILLISECONDS.toSeconds(millis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));  
+		
+		timeDisplay.setText(timeText);
 		
 		// Setup the buttons
 		startButton = new JButton("Start");
@@ -141,8 +164,20 @@ public class PluginImplementation implements IPlugin {
 
 	@Override
 	public void suspendProcess() {
-		
-		
+		receiver.HandleStatusMessage("Stopping Timer");
+    	
+    	if (timer != null)
+    	{
+    		timer.cancel();
+    		timer.purge();
+    		timer = null;
+    	}
+    	
+    	if (startingTime != null){
+        	timeAccumulated += (new Date().getTime() - startingTime.getTime());
+        	
+        	startingTime = null;
+        }
 	}
 
 	@Override
